@@ -1,0 +1,114 @@
+﻿@page "/Popup_message_test"
+@page "/Popup_message_test/{selectedIndex:int}"
+<PopupMessage @ref="Popup"></PopupMessage>
+<h1>Popup Message Test</h1>
+<div>
+
+    <h4><input type="checkbox" @bind="@Shows[0]" /> Popup Messages with Local component </h4>
+    <div hidden="@(!Shows[0])">
+        In this example, the PopupMessage component is used as page scope.
+        <p style="text-align:center">
+            <input type="button" value="Information Message" @onclick="@((e)=> { PageScopeShowPopupMessage(1); })" />
+            <input type="button" value="Alert Message" @onclick="@((e)=> { PageScopeShowPopupMessage(2); })" />
+            <input type="button" value="Exception Message" @onclick="@((e)=> { PageScopeShowPopupMessage(2); })" />
+        </p>
+    </div>
+</div>
+<hr />
+<div>
+
+    <h4><input type="checkbox" @bind="@Shows[1]" /> Popup Messages with Static Component </h4>
+    <div hidden="@(!Shows[1])">
+        In this example, the PopupMessage component is shared among pages by being declared as static property of the MainLayout component.
+        <p style="text-align:center">
+            <input type="button" value="Information Message" @onclick="@((e)=> { StaticShowPopupMessage(1); })" />
+            <input type="button" value="Alert Message" @onclick="@((e)=> { StaticShowPopupMessage(2); })" />
+            <input type="button" value="Exception Message" @onclick="@((e)=> { StaticShowPopupMessage(2); })" />
+        </p>
+    </div>
+</div>
+<hr />
+<div>
+
+    <h4><input type="checkbox" @bind="@Shows[2]" /> Popup Messages with Callback hander </h4>
+    <div hidden="@(!Shows[2])">
+        In this example, the PopupMessage component is shared among pages by being declared as static property of the MainLayout component.
+        <p style="text-align:center">
+            <input type="button" value="Information Message" @onclick="@((e)=> { PopupMesageWithCallbackHander(); })" />
+           
+        </p>
+        <p><b>@UserSelectButton</b></p>
+    </div>
+</div>
+
+@code {
+    public bool[] Shows { get; set; }
+    [Parameter]
+    public int SelectedIndex
+    {
+        set
+        {
+            Shows[value] = true;
+        }
+    }
+    public string UserSelectButton { get; set; }
+    public PopupMessage Popup { get; set; }
+    public PopupMessageTest()
+    {
+        Shows = new bool[20];
+    }
+    public void StaticShowPopupMessage(int choice)
+    {
+        string message = "";
+        switch (choice)
+        {
+            case 1:
+                message = "<b>Information Style Message:</b> This message will be showed as information style popup message by using the static popup component in the MainLayout";
+                Popup.ShowInformationMesage(message);
+                break;
+            case 2:
+                message = "<b>Alert Style Message:</b> This message will be showed as Alert style popup message  by using the static popup component in the MainLayout";
+                Popup.ShowWarningMessage(message);
+                break;
+            case 3:
+                message = "<b>Exception Style Message:</b> This message will be showed as Exception style popup message  by using the static popup component in the MainLayout";
+                Popup.ShowExceptionMessage(message);
+                break;
+        }
+
+    }
+
+    public void PageScopeShowPopupMessage(int choice)
+    {
+        string message = "";
+        switch (choice)
+        {
+            case 1:
+                message = "<b>Information Style Message:</b> This message will be showed as information style popup message";
+                MainLayout.Popup.ShowInformationMesage(message);
+                break;
+            case 2:
+                message = "<b>Alert Style Message:</b> This message will be showed as Alert style popup message";
+                MainLayout.Popup.ShowWarningMessage(message);
+                break;
+            case 3:
+                message = "<b>Exception Style Message:</b> This message will be showed as Exception style popup message";
+                MainLayout.Popup.ShowExceptionMessage(message);
+                break;
+        }
+
+    }
+
+    public void PopupMesageWithCallbackHander()
+    {
+        string message = message = "<b>Information Style Message:</b> This message will be showed the OK and Cancell Buttons. Handler Callback with pass";
+
+        Popup.ShowInformationMesage(message,"User selection","OK","Cancel",(b)=>{
+
+            UserSelectButton = b ? "OK Selected" : "Cancell selected ";
+            this.StateHasChanged();
+        });
+
+
+    }
+}

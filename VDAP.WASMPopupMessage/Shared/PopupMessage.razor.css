@@ -1,0 +1,55 @@
+﻿.popupMessage {
+    position: fixed;
+    z-index: 9999;
+    top: 20%;
+    left: 50%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border-radius: 10px;
+    border: 1px solid #0047b3;
+    transform: translate(-50%,-50%);
+    max-width: 40%;
+    background-color: #1a8cff;
+    color: white;
+}
+
+.information {
+}
+
+    .information label {
+        color: yellowgreen;
+        font-size: 30px;
+        background-color: white;
+        padding-left: 10px;
+        padding-right: 10px;
+        border-radius: 4px;
+    }
+
+
+.exception {
+}
+
+    .exception label {
+        color: red;
+        font-size: 30px;
+        background-color: white;
+        padding-left: 10px;
+        padding-right: 10px;
+        border-radius: 4px;
+    }
+
+
+
+.warning {
+}
+
+    .warning label {
+        color: #ff9900;
+        font-size: 30px;
+        background-color: white;
+        padding-left: 10px;
+        padding-right: 10px;
+        border-radius: 4px;
+    }

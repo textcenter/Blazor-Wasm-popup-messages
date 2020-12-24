@@ -1,0 +1,122 @@
+﻿
+<div hidden="@Hidden" class="popupMessage @SubClassName">
+
+    <h2>
+        <label>
+            @((MarkupString)Icon)
+        </label>  @HeaderText
+    </h2>
+    <div>
+        @((MarkupString)BodyText)
+    </div>
+    <p style="text-align:center; margin-top:10px;">
+        <button @onclick="@(()=> { ButtonClicked(true); })">@OKButtonText</button>
+        <button @onclick="@(()=> { ButtonClicked(false); })" hidden="@(string.IsNullOrEmpty(CancelButtonText))">@CancelButtonText</button>
+    </p>
+
+
+</div>
+
+@code {
+    private string SubClassName { get; set; }
+    private string Icon { get; set; }
+    public string HeaderText
+    {
+        get;
+        set;
+    }
+    public string BodyText
+    {
+        get;
+        set;
+    }
+    public string OKButtonText
+    {
+        get;
+        set;
+    }
+    public string CancelButtonText
+    {
+        get;
+        set;
+    }
+    public bool Hidden { get; set; }
+    public Action<bool> Callback;
+    public PopupMessage()
+    {
+        OKButtonText = "OK";
+        CancelButtonText = "";
+        Hidden = true;
+        SubClassName = "information";
+        //Icon = "<span>&#9888;</span>";
+
+
+    }
+    public void ButtonClicked(bool confirmed)
+    {
+        if (Callback != null)
+            Callback(confirmed);
+        Hidden = true;
+    }
+
+    public void ShowInformationMesage(string bodyText, Action<bool> callback)
+    {
+        ShowInformationMesage(bodyText, "Information", "OK", "", callback);
+    }
+    public void ShowInformationMesage(string bodyText)
+    {
+        ShowInformationMesage(bodyText, "Information", "OK", "", null);
+    }
+    public void ShowInformationMesage(string bodyText, string headerText, string okButtonText, string cancellButtonText, Action<bool> callback)
+    {
+        Icon = "&#x2139;";
+        SubClassName = "information";
+        Callback = callback;
+        this.HeaderText = $"{ headerText}";
+        this.BodyText = bodyText;
+        this.OKButtonText = okButtonText;
+        this.CancelButtonText = cancellButtonText;
+        Hidden = false;
+        Refresh();
+    }
+
+    public void ShowExceptionMessage(string bodyText)
+    {
+        ShowExceptionMessage(bodyText, "Exception", "OK", "", null);
+    }
+    public void ShowExceptionMessage(string bodyText, string headerText, string okButtonText, string cancellButtonText, Action<bool> callback)
+    {
+        Icon = "&#9888;";
+        SubClassName = "exception";
+        Callback = callback;
+        this.HeaderText = $"{ headerText}";
+        this.BodyText = bodyText;
+        this.OKButtonText = okButtonText;
+        this.CancelButtonText = cancellButtonText;
+        Hidden = false;
+        Refresh();
+    }
+
+    public void ShowWarningMessage(string bodyText)
+    {
+        ShowWarningMessage(bodyText, "Alert", "OK", "", null);
+    }
+
+    public void ShowWarningMessage(string bodyText, string headerText, string okButtonText, string cancellButtonText, Action<bool> callback)
+    {
+        Icon = "&#9888;";
+        SubClassName = "warning";
+        Callback = callback;
+        this.HeaderText = $"{ headerText}";
+        this.BodyText = bodyText;
+        this.OKButtonText = okButtonText;
+        this.CancelButtonText = cancellButtonText;
+        Hidden = false;
+        Refresh();
+    }
+
+    public void Refresh()
+    {
+        this.StateHasChanged();
+    }
+}
