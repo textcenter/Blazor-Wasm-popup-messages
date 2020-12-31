@@ -4,7 +4,7 @@
 <h1>Popup Message Test</h1>
 <div>
 
-    <h4><input type="checkbox" @bind="@Shows[0]" /> Popup Messages with Local component </h4>
+    <h4><input type="checkbox" @bind="@Shows[0]" /> Popup Messages with the Local component </h4>
     <div hidden="@(!Shows[0])">
         In this example, the PopupMessage component is used as page scope.
         <p style="text-align:center">
@@ -17,9 +17,9 @@
 <hr />
 <div>
 
-    <h4><input type="checkbox" @bind="@Shows[1]" /> Popup Messages with Static Component </h4>
+    <h4><input type="checkbox" @bind="@Shows[1]" /> Popup Messages with theStatic Component </h4>
     <div hidden="@(!Shows[1])">
-        In this example, the PopupMessage component is shared among pages by being declared as static property of the MainLayout component.
+        In this example, the PopupMessage component is shared among pages by being declared as a static property of the MainLayout component.
         <p style="text-align:center">
             <input type="button" value="Information Message" @onclick="@((e)=> { StaticShowPopupMessage(1); })" />
             <input type="button" value="Alert Message" @onclick="@((e)=> { StaticShowPopupMessage(2); })" />
@@ -30,14 +30,27 @@
 <hr />
 <div>
 
-    <h4><input type="checkbox" @bind="@Shows[2]" /> Popup Messages with Callback hander </h4>
+    <h4><input type="checkbox" @bind="@Shows[2]" /> Popup Messages with the Callback hander </h4>
     <div hidden="@(!Shows[2])">
-        In this example, the PopupMessage component is shared among pages by being declared as static property of the MainLayout component.
+        In this example, the PopupMessage component is shared among pages by being declared as a static property of the MainLayout component.
         <p style="text-align:center">
-            <input type="button" value="Information Message" @onclick="@((e)=> { PopupMesageWithCallbackHander(); })" />
-           
+            <input type="button" value="Information Message" @onclick="@((e)=> { PopupMesageWithCallbackHander(1); })" />
+
         </p>
         <p><b>@UserSelectButton</b></p>
+    </div>
+</div>
+<hr />
+<div>
+
+    <h4><input type="checkbox" @bind="@Shows[3]" /> Popup Messages with the User Enter Information </h4>
+    <div hidden="@(!Shows[3])">
+        In this example, the PopupMessage component will pass the user's to the caller via the callback handler
+        <p style="text-align:center">
+            <input type="button" value="Information Message" @onclick="@((e)=> { PopupMesageWithCallbackHander(2); })" />
+
+        </p>
+        <p><b>@UserInput</b></p>
     </div>
 </div>
 
@@ -52,6 +65,7 @@
         }
     }
     public string UserSelectButton { get; set; }
+    public string UserInput { get; set; }
     public PopupMessage Popup { get; set; }
     public PopupMessageTest()
     {
@@ -99,15 +113,33 @@
 
     }
 
-    public void PopupMesageWithCallbackHander()
+    public void PopupMesageWithCallbackHander(int choice)
     {
-        string message = message = "<b>Information Style Message:</b> This message will be showed the OK and Cancell Buttons. Handler Callback with pass";
+        string message = "";
+        switch (choice)
+        {
+            case 1:
+                message = message = "<b>Information Style Message:</b> This message will be showed the OK and Cancell Buttons. Handler Callback with pass";
 
-        Popup.ShowInformationMesage(message,"User selection","OK","Cancel",(b)=>{
+                Popup.ShowInformationMesage(message, "User selection", "OK", "Cancel", (b) =>
+                {
 
-            UserSelectButton = b ? "OK Selected" : "Cancell selected ";
-            this.StateHasChanged();
-        });
+                    UserSelectButton = b ? "OK Selected" : "Cancell selected ";
+                    this.StateHasChanged();
+                });
+
+                break;
+            case 2:
+                message = message = "Please enter your name: ";
+
+                Popup.ShowGetUserEnter(message, "User enter information", "OK", "Cancel", (yes,data) =>
+                {
+
+                    UserInput = yes ? $"User entered {data}" : "User jected to enter their name ";
+                    this.StateHasChanged();
+                });
+                break;
+        }
 
 
     }

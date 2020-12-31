@@ -1,5 +1,4 @@
-﻿
-<div hidden="@Hidden" class="popupMessage @SubClassName">
+﻿<div hidden="@Hidden" class="popupMessage @SubClassName">
 
     <h2>
         <label>
@@ -8,7 +7,14 @@
     </h2>
     <div>
         @((MarkupString)BodyText)
+        @if (UserEnterRequired)
+        {
+            <input type="text" @bind="@UserEnter" style="width:200px;color:black;" placeholder="Data required" />
+            <br />
+            <label style="color:red;font-size:12px">@UserDateEmptyMessage</label>
+        }
     </div>
+
     <p style="text-align:center; margin-top:10px;">
         <button @onclick="@(()=> { ButtonClicked(true); })">@OKButtonText</button>
         <button @onclick="@(()=> { ButtonClicked(false); })" hidden="@(string.IsNullOrEmpty(CancelButtonText))">@CancelButtonText</button>
@@ -42,6 +48,10 @@
     }
     public bool Hidden { get; set; }
     public Action<bool> Callback;
+    public Action<bool, string> UserEnterCallback;
+    public string UserEnter { get; set; }
+    public bool UserEnterRequired { get; set; }
+    public string UserDateEmptyMessage { get; set; }
     public PopupMessage()
     {
         OKButtonText = "OK";
@@ -52,11 +62,48 @@
 
 
     }
+
     public void ButtonClicked(bool confirmed)
     {
-        if (Callback != null)
-            Callback(confirmed);
-        Hidden = true;
+        if (UserEnterRequired)
+        {
+            if (confirmed)
+            {
+                UserDateEmptyMessage = "";
+                if (string.IsNullOrEmpty(UserEnter))
+                {
+                    UserDateEmptyMessage = "Please enter data";
+                    return;
+                }
+            }
+            if (UserEnterCallback != null)
+                UserEnterCallback(confirmed, UserEnter);
+            Hidden = true;
+            UserEnterRequired = false;
+            UserEnter = "";
+
+        }
+        else
+        {
+            if (Callback != null)
+                Callback(confirmed);
+
+            Hidden = true;
+        }
+
+    }
+    public void ShowGetUserEnter(string bodyText, string headerText, string okButtonText, string cancellButtonText, Action<bool, string> callback)
+    {
+        UserEnterCallback = callback;
+        Icon = "&#x2139;";
+        SubClassName = "information";
+        this.HeaderText = $"{ headerText}";
+        this.BodyText = bodyText;
+        this.OKButtonText = okButtonText;
+        this.CancelButtonText = cancellButtonText;
+        Hidden = false;
+        UserEnterRequired = true;
+        Refresh();
     }
 
     public void ShowInformationMesage(string bodyText, Action<bool> callback)
